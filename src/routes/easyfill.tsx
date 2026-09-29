@@ -31,13 +31,13 @@ const SAMPLES = [
 ];
 
 function parse(text: string, baseConf: number) {
-  const out: Record<string, { value: string; conf: number }> = {};
+  const out: Record<string, { value: string; conf: number }> & { patientName?: { value: string; conf: number } } = {};
   const lines = text.split(/\n/);
   for (const f of FIELDS) {
-    for (const ln of lines) { const m = ln.match(f.re); if (m) { out[f.key] = { value: m[1].trim().replace(/\s+/g, " "), conf: Math.min(99, Math.round(baseConf - Math.random() * 8)) }; break; } }
+    for (const ln of lines) { const m = ln.match(f.re); if (m) { out[f.key] = { value: (m[1] ?? "").trim().replace(/\s+/g, " "), conf: Math.min(99, Math.round(baseConf - Math.random() * 8)) }; break; } }
     if (!out[f.key]) out[f.key] = { value: "", conf: 0 };
   }
-  if (out.patientName.value && /hospital|form/i.test(out.patientName.value)) out.patientName = { value: "", conf: 0 };
+  if (out.patientName?.value && /hospital|form/i.test(out.patientName.value)) out.patientName = { value: "", conf: 0 };
   return out;
 }
 

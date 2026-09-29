@@ -9,7 +9,7 @@ import { actions, bookedSlots, useStore, useUser } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/book/$hospitalId")({
-  validateSearch: (s: Record<string, unknown>): { service?: string; doctor?: string } => ({ service: typeof s["service"] === "string" ? (s["service"] as string) : undefined, doctor: typeof s["doctor"] === "string" ? (s["doctor"] as string) : undefined }),
+  validateSearch: (s: Record<string, unknown>): { service?: string | undefined; doctor?: string | undefined } => ({ service: typeof s["service"] === "string" ? (s["service"] as string) : undefined, doctor: typeof s["doctor"] === "string" ? (s["doctor"] as string) : undefined }),
   head: () => ({ meta: [{ title: "Book Appointment — HEALTH ASSIST AI" }, { name: "description", content: "Book a doctor appointment in a few steps." }, { property: "og:title", content: "Book Appointment — HEALTH ASSIST AI" }, { property: "og:description", content: "Pick doctor, date and time slot." }] }),
   component: () => <RequireAuth><BookPage /></RequireAuth>,
 });
@@ -49,7 +49,8 @@ function BookPage() {
 
   const fillFromEasy = () => {
     if (!easy) return;
-    setP((x) => ({ ...x, name: easy.patientName || x.name, age: easy.age || x.age, gender: easy.gender || x.gender, phone: easy.phone || x.phone, bloodGroup: easy.bloodGroup || "", insuranceId: easy.insuranceId || "", allergies: easy.allergies || "", notes: easy.medicalHistory || x.notes }));
+    const e = easy as Partial<Record<string, string>> & { patientName?: string; age?: string; gender?: string; phone?: string; bloodGroup?: string; insuranceId?: string; allergies?: string; medicalHistory?: string };
+    setP((x) => ({ ...x, name: e.patientName || x.name, age: e.age || x.age, gender: e.gender || x.gender, phone: e.phone || x.phone, bloodGroup: e.bloodGroup || "", insuranceId: e.insuranceId || "", allergies: e.allergies || "", notes: e.medicalHistory || x.notes }));
     toast.success("Patient details filled from EasyFill");
   };
 

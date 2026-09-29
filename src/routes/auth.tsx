@@ -6,7 +6,7 @@ import { Btn, Card, Input, Label, Logo } from "@/components/app/ui";
 import { actions } from "@/lib/store";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (s: Record<string, unknown>): { redirect?: string } => ({ redirect: typeof s["redirect"] === "string" ? (s["redirect"] as string) : undefined }),
+  validateSearch: (s: Record<string, unknown>): { redirect?: string | undefined } => ({ redirect: typeof s["redirect"] === "string" ? (s["redirect"] as string) : undefined }),
   head: () => ({ meta: [{ title: "Sign in — HEALTH ASSIST AI" }, { name: "description", content: "Sign in or create your HEALTH ASSIST AI account." }, { property: "og:title", content: "Sign in — HEALTH ASSIST AI" }, { property: "og:description", content: "Access nearby hospitals, bookings and EasyFill." }] }),
   component: AuthPage,
 });
