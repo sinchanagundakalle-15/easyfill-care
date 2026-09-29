@@ -10,9 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AppointmentsRouteImport } from './routes/appointments'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CompareRouteImport } from './routes/compare'
+import { Route as EasyfillRouteImport } from './routes/easyfill'
 import { Route as FindRouteImport } from './routes/find'
 import { Route as BookHospitalIdRouteImport } from './routes/book.$hospitalId'
 import { Route as HospitalIdRouteImport } from './routes/hospital.$id'
@@ -20,6 +22,11 @@ import { Route as HospitalIdRouteImport } from './routes/hospital.$id'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppointmentsRoute = AppointmentsRouteImport.update({
@@ -35,6 +42,11 @@ const AuthRoute = AuthRouteImport.update({
 const CompareRoute = CompareRouteImport.update({
   id: '/compare',
   path: '/compare',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EasyfillRoute = EasyfillRouteImport.update({
+  id: '/easyfill',
+  path: '/easyfill',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FindRoute = FindRouteImport.update({
@@ -55,18 +67,22 @@ const HospitalIdRoute = HospitalIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/appointments': typeof AppointmentsRoute
   '/auth': typeof AuthRoute
   '/compare': typeof CompareRoute
+  '/easyfill': typeof EasyfillRoute
   '/find': typeof FindRoute
   '/book/$hospitalId': typeof BookHospitalIdRoute
   '/hospital/$id': typeof HospitalIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/appointments': typeof AppointmentsRoute
   '/auth': typeof AuthRoute
   '/compare': typeof CompareRoute
+  '/easyfill': typeof EasyfillRoute
   '/find': typeof FindRoute
   '/book/$hospitalId': typeof BookHospitalIdRoute
   '/hospital/$id': typeof HospitalIdRoute
@@ -74,9 +90,11 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/appointments': typeof AppointmentsRoute
   '/auth': typeof AuthRoute
   '/compare': typeof CompareRoute
+  '/easyfill': typeof EasyfillRoute
   '/find': typeof FindRoute
   '/book/$hospitalId': typeof BookHospitalIdRoute
   '/hospital/$id': typeof HospitalIdRoute
@@ -85,27 +103,33 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/appointments'
     | '/auth'
     | '/compare'
+    | '/easyfill'
     | '/find'
     | '/book/$hospitalId'
     | '/hospital/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/appointments'
     | '/auth'
     | '/compare'
+    | '/easyfill'
     | '/find'
     | '/book/$hospitalId'
     | '/hospital/$id'
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/appointments'
     | '/auth'
     | '/compare'
+    | '/easyfill'
     | '/find'
     | '/book/$hospitalId'
     | '/hospital/$id'
@@ -113,9 +137,11 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   AppointmentsRoute: typeof AppointmentsRoute
   AuthRoute: typeof AuthRoute
   CompareRoute: typeof CompareRoute
+  EasyfillRoute: typeof EasyfillRoute
   FindRoute: typeof FindRoute
   BookHospitalIdRoute: typeof BookHospitalIdRoute
   HospitalIdRoute: typeof HospitalIdRoute
@@ -128,6 +154,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/appointments': {
@@ -149,6 +182,13 @@ declare module '@tanstack/react-router' {
       path: '/compare'
       fullPath: '/compare'
       preLoaderRoute: typeof CompareRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/easyfill': {
+      id: '/easyfill'
+      path: '/easyfill'
+      fullPath: '/easyfill'
+      preLoaderRoute: typeof EasyfillRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/find': {
@@ -177,9 +217,11 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   AppointmentsRoute: AppointmentsRoute,
   AuthRoute: AuthRoute,
   CompareRoute: CompareRoute,
+  EasyfillRoute: EasyfillRoute,
   FindRoute: FindRoute,
   BookHospitalIdRoute: BookHospitalIdRoute,
   HospitalIdRoute: HospitalIdRoute,
