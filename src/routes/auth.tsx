@@ -6,7 +6,7 @@ import { Btn, Card, Input, Label, Logo } from "@/components/app/ui";
 import { actions } from "@/lib/store";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (s: Record<string, unknown>) => ({ redirect: typeof s.redirect === "string" ? s.redirect : undefined }),
+  validateSearch: (s: Record<string, unknown>): { redirect?: string } => ({ redirect: typeof s["redirect"] === "string" ? (s["redirect"] as string) : undefined }),
   head: () => ({ meta: [{ title: "Sign in — HEALTH ASSIST AI" }, { name: "description", content: "Sign in or create your HEALTH ASSIST AI account." }, { property: "og:title", content: "Sign in — HEALTH ASSIST AI" }, { property: "og:description", content: "Access nearby hospitals, bookings and EasyFill." }] }),
   component: AuthPage,
 });
@@ -33,7 +33,7 @@ function AuthPage() {
     try {
       if (mode === "signup") {
         const r = signupSchema.safeParse(f);
-        if (!r.success) return setErr(r.error.issues[0].message);
+        if (!r.success) return setErr(r.error.issues[0]!.message);
         actions.signup({ name: r.data.name, email: r.data.email, phone: r.data.phone, password: r.data.password });
         toast.success("Account created. Welcome!");
         go();

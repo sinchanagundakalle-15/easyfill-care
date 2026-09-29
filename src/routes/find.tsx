@@ -8,7 +8,7 @@ import { DOCTORS, SERVICES, geocode, haversine, predictWait, slotsFor } from "@/
 import { actions, bookedSlots, useStore } from "@/lib/store";
 
 export const Route = createFileRoute("/find")({
-  validateSearch: (s: Record<string, unknown>) => ({ q: typeof s.q === "string" ? s.q : undefined }),
+  validateSearch: (s: Record<string, unknown>): { q?: string } => ({ q: typeof s["q"] === "string" ? (s["q"] as string) : undefined }),
   head: () => ({ meta: [{ title: "Find Healthcare Services Near You — HEALTH ASSIST AI" }, { name: "description", content: "Nearby hospitals with prices, ratings, distance and available slots." }, { property: "og:title", content: "Find Healthcare Services — HEALTH ASSIST AI" }, { property: "og:description", content: "Compare nearby hospitals on a live map." }] }),
   component: () => <RequireAuth><FindPage /></RequireAuth>,
 });

@@ -35,7 +35,7 @@ export default function HospitalMap({ hospitals, user, radiusKm, onSelect, heigh
         if (radiusKm) L.circle([user.lat, user.lng], { radius: radiusKm * 1000, color: "#19a7b8", weight: 1, fillOpacity: 0.05 }).addTo(layer);
       }
       if (pts.length > 1) map.fitBounds(pts, { padding: [40, 40], maxZoom: 14 });
-      else if (pts.length === 1) map.setView(pts[0], 13);
+      else if (pts.length === 1) map.setView(pts[0]!, 13);
     });
     return () => { cancelled = true; };
   }, [hospitals, user, radiusKm, onSelect]);

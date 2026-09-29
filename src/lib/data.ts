@@ -75,7 +75,7 @@ const TIMINGS = ["Mon–Sat · 9:00 AM – 1:00 PM", "Mon–Fri · 4:00 PM – 8
 export const DOCTORS: Doctor[] = HOSPITALS.flatMap((h, hi) =>
   (DOC_SPEC[h.id] ?? []).map(([name, specialty], i) => ({
     id: `${h.id}-d${i}`, name, specialty, hospitalId: h.id,
-    experience: 6 + ((hi * 7 + i * 5) % 20), timings: TIMINGS[(hi + i) % TIMINGS.length],
+    experience: 6 + ((hi * 7 + i * 5) % 20), timings: TIMINGS[(hi + i) % TIMINGS.length]!,
     fee: 300 + ((hi + i * 3) % 6) * 100,
   })),
 );

@@ -9,7 +9,7 @@ import { actions, bookedSlots, useStore, useUser } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/book/$hospitalId")({
-  validateSearch: (s: Record<string, unknown>) => ({ service: typeof s.service === "string" ? s.service : undefined, doctor: typeof s.doctor === "string" ? s.doctor : undefined }),
+  validateSearch: (s: Record<string, unknown>): { service?: string; doctor?: string } => ({ service: typeof s["service"] === "string" ? (s["service"] as string) : undefined, doctor: typeof s["doctor"] === "string" ? (s["doctor"] as string) : undefined }),
   head: () => ({ meta: [{ title: "Book Appointment — HEALTH ASSIST AI" }, { name: "description", content: "Book a doctor appointment in a few steps." }, { property: "og:title", content: "Book Appointment — HEALTH ASSIST AI" }, { property: "og:description", content: "Pick doctor, date and time slot." }] }),
   component: () => <RequireAuth><BookPage /></RequireAuth>,
 });
@@ -34,8 +34,8 @@ function BookPage() {
   useStore((s) => s.appointments.length);
   const docs = DOCTORS.filter((d) => d.hospitalId === hospitalId);
   const [step, setStep] = useState(search.doctor ? 1 : 0);
-  const [doctorId, setDoctorId] = useState(search.doctor ?? docs[0]?.id);
-  const [serviceId, setServiceId] = useState(search.service ?? h.services[0].serviceId);
+  const [doctorId, setDoctorId] = useState<string>(search.doctor ?? docs[0]!.id);
+  const [serviceId, setServiceId] = useState<string>(search.service ?? h.services[0]!.serviceId);
   const [date, setDate] = useState(iso(new Date()));
   const [time, setTime] = useState<string | null>(null);
   const [p, setP] = useState({ name: user.name, age: "", gender: "", phone: user.phone, bloodGroup: "", insuranceId: "", allergies: "", notes: "" });
@@ -55,7 +55,7 @@ function BookPage() {
 
   const confirm = () => {
     const r = patientSchema.safeParse(p);
-    if (!r.success) return setErr(r.error.issues[0].message);
+    if (!r.success) return setErr(r.error.issues[0]!.message);
     setErr(null);
     const id = actions.book({ userEmail: user.email, hospitalId, doctorId, serviceId, date, time: time!, patient: p });
     setDone(id);
@@ -120,7 +120,7 @@ function BookPage() {
         )}
         <div className="mt-8 flex justify-between">
           <Btn variant="outline" disabled={step === 0} onClick={() => setStep(step - 1)}>Back</Btn>
-          {step < 3 ? <Btn disabled={step === 1 && !time} onClick={() => { if (step === 2) { const r = patientSchema.safeParse(p); if (!r.success) return setErr(r.error.issues[0].message); setErr(null); } setStep(step + 1); }}>Continue</Btn> : <Btn variant="teal" onClick={confirm}>Confirm booking</Btn>}
+          {step < 3 ? <Btn disabled={step === 1 && !time} onClick={() => { if (step === 2) { const r = patientSchema.safeParse(p); if (!r.success) return setErr(r.error.issues[0]!.message); setErr(null); } setStep(step + 1); }}>Continue</Btn> : <Btn variant="teal" onClick={confirm}>Confirm booking</Btn>}
         </div>
       </Card>
 
