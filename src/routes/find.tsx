@@ -1,4 +1,4 @@
-// @ts-nocheck
+// @ts-nocheck: This route currently uses dynamic types that are not compatible with strict TypeScript checking.
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useMemo, useState } from "react";
 import { toast } from "sonner";
