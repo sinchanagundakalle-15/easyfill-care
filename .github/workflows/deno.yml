@@ -36,7 +36,8 @@ jobs:
       #   run: deno fmt --check
 
       - name: Run linter
-        run: deno lint
+        run: deno lint --exclude=src/routeTree.gen.ts
 
       - name: Run tests
         run: deno test -A
+  
