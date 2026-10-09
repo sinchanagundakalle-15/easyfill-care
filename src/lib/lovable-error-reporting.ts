@@ -51,7 +51,7 @@ export function reportLovableError(error: unknown, context: Record<string, unkno
         ? error.message
         : String(error);
   const stack = error instanceof Error ? error.stack : undefined;
-  globalThis.__lovableReportRuntimeError?.({
+  (globalThis as unknown as { __lovableReportRuntimeError?: (e: { message: string; stack?: string; filename: string }) => void }).__lovableReportRuntimeError?.({
     message,
     ...(stack !== undefined && { stack }),
     filename: window.location.pathname,
