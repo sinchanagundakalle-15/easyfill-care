@@ -10,11 +10,8 @@ export function useIsMobile() {
     const onChange = () => {
       setIsMobile(globalThis.innerWidth < MOBILE_BREAKPOINT);
     };
-    const mql = globalThis.matchMedia(
-  `(max-width: ${MOBILE_BREAKPOINT - 1}px)`,
-);
-
-setIsMobile(globalThis.innerWidth < MOBILE_BREAKPOINT);
+    mql.addEventListener("change", onChange);
+    setIsMobile(globalThis.innerWidth < MOBILE_BREAKPOINT);
     return () => mql.removeEventListener("change", onChange);
   }, []);
 
