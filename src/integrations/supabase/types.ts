@@ -14,7 +14,102 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      easyfill_data: {
+        Row: {
+          fields: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          fields?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          fields?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      period_preferences: {
+        Row: {
+          average_cycle_days: number | null
+          average_period_days: number | null
+          reminder_days_before: number
+          reminders_enabled: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          average_cycle_days?: number | null
+          average_period_days?: number | null
+          reminder_days_before?: number
+          reminders_enabled?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          average_cycle_days?: number | null
+          average_period_days?: number | null
+          reminder_days_before?: number
+          reminders_enabled?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      period_records: {
+        Row: {
+          created_at: string
+          end_date: string | null
+          id: string
+          start_date: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          start_date: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          start_date?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string
+          id: string
+          phone: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          full_name?: string
+          id: string
+          phone?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          full_name?: string
+          id?: string
+          phone?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
