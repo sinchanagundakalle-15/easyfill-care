@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Use Lovable Cloud Auth and owner-scoped database policies for real accounts and sensitive records; keep local storage for explicitly labeled demo state because browser-stored identity cannot enforce privacy.
