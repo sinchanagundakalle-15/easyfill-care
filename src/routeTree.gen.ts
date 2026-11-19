@@ -16,6 +16,8 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CompareRouteImport } from './routes/compare'
 import { Route as EasyfillRouteImport } from './routes/easyfill'
 import { Route as FindRouteImport } from './routes/find'
+import { Route as PeriodTrackerRouteImport } from './routes/period-tracker'
+import { Route as SchemesRouteImport } from './routes/schemes'
 import { Route as BookHospitalIdRouteImport } from './routes/book.$hospitalId'
 import { Route as HospitalIdRouteImport } from './routes/hospital.$id'
 
@@ -54,6 +56,16 @@ const FindRoute = FindRouteImport.update({
   path: '/find',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PeriodTrackerRoute = PeriodTrackerRouteImport.update({
+  id: '/period-tracker',
+  path: '/period-tracker',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SchemesRoute = SchemesRouteImport.update({
+  id: '/schemes',
+  path: '/schemes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BookHospitalIdRoute = BookHospitalIdRouteImport.update({
   id: '/book/$hospitalId',
   path: '/book/$hospitalId',
@@ -73,6 +85,8 @@ export interface FileRoutesByFullPath {
   '/compare': typeof CompareRoute
   '/easyfill': typeof EasyfillRoute
   '/find': typeof FindRoute
+  '/period-tracker': typeof PeriodTrackerRoute
+  '/schemes': typeof SchemesRoute
   '/book/$hospitalId': typeof BookHospitalIdRoute
   '/hospital/$id': typeof HospitalIdRoute
 }
@@ -84,6 +98,8 @@ export interface FileRoutesByTo {
   '/compare': typeof CompareRoute
   '/easyfill': typeof EasyfillRoute
   '/find': typeof FindRoute
+  '/period-tracker': typeof PeriodTrackerRoute
+  '/schemes': typeof SchemesRoute
   '/book/$hospitalId': typeof BookHospitalIdRoute
   '/hospital/$id': typeof HospitalIdRoute
 }
@@ -96,6 +112,8 @@ export interface FileRoutesById {
   '/compare': typeof CompareRoute
   '/easyfill': typeof EasyfillRoute
   '/find': typeof FindRoute
+  '/period-tracker': typeof PeriodTrackerRoute
+  '/schemes': typeof SchemesRoute
   '/book/$hospitalId': typeof BookHospitalIdRoute
   '/hospital/$id': typeof HospitalIdRoute
 }
@@ -109,6 +127,8 @@ export interface FileRouteTypes {
     | '/compare'
     | '/easyfill'
     | '/find'
+    | '/period-tracker'
+    | '/schemes'
     | '/book/$hospitalId'
     | '/hospital/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -120,6 +140,8 @@ export interface FileRouteTypes {
     | '/compare'
     | '/easyfill'
     | '/find'
+    | '/period-tracker'
+    | '/schemes'
     | '/book/$hospitalId'
     | '/hospital/$id'
   id:
@@ -131,6 +153,8 @@ export interface FileRouteTypes {
     | '/compare'
     | '/easyfill'
     | '/find'
+    | '/period-tracker'
+    | '/schemes'
     | '/book/$hospitalId'
     | '/hospital/$id'
   fileRoutesById: FileRoutesById
@@ -143,6 +167,8 @@ export interface RootRouteChildren {
   CompareRoute: typeof CompareRoute
   EasyfillRoute: typeof EasyfillRoute
   FindRoute: typeof FindRoute
+  PeriodTrackerRoute: typeof PeriodTrackerRoute
+  SchemesRoute: typeof SchemesRoute
   BookHospitalIdRoute: typeof BookHospitalIdRoute
   HospitalIdRoute: typeof HospitalIdRoute
 }
@@ -198,6 +224,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FindRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/period-tracker': {
+      id: '/period-tracker'
+      path: '/period-tracker'
+      fullPath: '/period-tracker'
+      preLoaderRoute: typeof PeriodTrackerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/schemes': {
+      id: '/schemes'
+      path: '/schemes'
+      fullPath: '/schemes'
+      preLoaderRoute: typeof SchemesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/book/$hospitalId': {
       id: '/book/$hospitalId'
       path: '/book/$hospitalId'
@@ -223,6 +263,8 @@ const rootRouteChildren: RootRouteChildren = {
   CompareRoute: CompareRoute,
   EasyfillRoute: EasyfillRoute,
   FindRoute: FindRoute,
+  PeriodTrackerRoute: PeriodTrackerRoute,
+  SchemesRoute: SchemesRoute,
   BookHospitalIdRoute: BookHospitalIdRoute,
   HospitalIdRoute: HospitalIdRoute,
 }

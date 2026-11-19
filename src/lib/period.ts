@@ -18,7 +18,10 @@ export function averageCycleLength(records: PeriodRecord[], chosenCycleDays: num
     .sort((a, b) => a.timestamp - b.timestamp);
   if (dates.length < 2) return chosenCycleDays;
   const recent = dates.slice(-7);
-  const intervals = recent.slice(1).map((entry, index) => Math.round((entry.timestamp - recent[index]!.timestamp) / DAY_MS));
+  const intervals = recent.slice(1).map((entry, index) => {
+    const previous = recent[index];
+    return previous ? Math.round((entry.timestamp - previous.timestamp) / DAY_MS) : 0;
+  });
   if (intervals.length === 0 || intervals.some((days) => days <= 0)) return chosenCycleDays;
   return Math.round(intervals.reduce((sum, days) => sum + days, 0) / intervals.length);
 }
