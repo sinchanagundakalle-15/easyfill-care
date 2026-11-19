@@ -2,7 +2,8 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, type ReactNode, type ButtonHTMLAttributes, type InputHTMLAttributes } from "react";
 import { HeartPulse, LogOut, Star, Type, Menu } from "lucide-react";
 import { useState } from "react";
-import { actions, useHydrated, useStore, useUser } from "@/lib/store";
+import { actions, useHydrated, useStore, useUser as useDemoUser } from "@/lib/store";
+import { signOutCloud, useAppUser, useCloudAuth } from "@/lib/cloud-user";
 import { cn } from "@/lib/utils";
 
 export function Btn({ variant = "primary", size = "md", className, ...p }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: "primary" | "outline" | "ghost" | "teal" | "danger"; size?: "sm" | "md" | "lg" }) {
@@ -62,10 +63,14 @@ const NAV = [
   { to: "/compare", label: "Compare" },
   { to: "/appointments", label: "My Appointments" },
   { to: "/easyfill", label: "EasyFill" },
+  { to: "/schemes", label: "Government Schemes" },
+  { to: "/period-tracker", label: "Period Tracker" },
 ] as const;
 
 export function Header() {
-  const user = useUser();
+  const { user } = useAppUser();
+  const { user: cloudUser } = useCloudAuth();
+  const demoUser = useDemoUser();
   const nav = useNavigate();
   const large = useStore((s) => s.largeText);
   const cmp = useStore((s) => s.compare.length);
@@ -81,14 +86,14 @@ export function Header() {
               {n.label}{n.to === "/compare" && cmp > 0 && <span className="ml-1 rounded-full bg-teal px-1.5 text-[10px] text-primary-foreground">{cmp}</span>}
             </Link>
           ))}
-          {user?.role === "admin" && <Link to="/admin" className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary" activeProps={{ className: "!text-primary bg-secondary" }}>Admin</Link>}
+          {demoUser?.role === "admin" && !cloudUser && <Link to="/admin" className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary" activeProps={{ className: "!text-primary bg-secondary" }}>Admin</Link>}
         </nav>
         <div className="flex items-center gap-2">
           <button aria-label="Toggle large high-contrast text" onClick={actions.toggleLargeText} className={cn("grid h-9 w-9 place-items-center rounded-lg border", large && "bg-primary text-primary-foreground")}><Type className="h-4 w-4" /></button>
           {user ? (
             <>
               <span className="hidden text-sm font-medium lg:inline">Hi, {user.name.split(" ")[0]}</span>
-              <Btn size="sm" variant="outline" onClick={() => { actions.logout(); nav({ to: "/" }); }}><LogOut className="h-4 w-4" /> <span className="hidden sm:inline">Logout</span></Btn>
+              <Btn size="sm" variant="outline" onClick={() => { void (cloudUser ? signOutCloud() : Promise.resolve(actions.logout())).then(() => nav({ to: "/" })); }}><LogOut className="h-4 w-4" /> <span className="hidden sm:inline">Logout</span></Btn>
             </>
           ) : (
             <Link to="/auth"><Btn size="sm">Sign in</Btn></Link>
@@ -99,7 +104,7 @@ export function Header() {
       {open && (
         <div className="border-t px-4 py-2 md:hidden">
           {NAV.map((n) => <Link key={n.to} to={n.to} onClick={() => setOpen(false)} className="block rounded-lg px-3 py-2 text-sm font-medium">{n.label}</Link>)}
-          {user?.role === "admin" && <Link to="/admin" className="block rounded-lg px-3 py-2 text-sm font-medium">Admin</Link>}
+          {demoUser?.role === "admin" && !cloudUser && <Link to="/admin" className="block rounded-lg px-3 py-2 text-sm font-medium">Admin</Link>}
         </div>
       )}
     </header>
@@ -117,13 +122,25 @@ export function Page({ children, className }: { children: ReactNode; className?:
 
 export function RequireAuth({ children, admin }: { children: ReactNode; admin?: boolean }) {
   const hydrated = useHydrated();
-  const user = useUser();
+  const { user, loading } = useAppUser();
   const nav = useNavigate();
   useEffect(() => {
-    if (hydrated && !user) nav({ to: "/auth", search: { redirect: window.location.pathname } });
-  }, [hydrated, user, nav]);
-  if (!hydrated || !user) return <div className="grid min-h-dvh place-items-center text-muted-foreground">Loading…</div>;
-  if (admin && user.role !== "admin") return <Page><Card className="p-10 text-center"><h2 className="text-xl font-bold">Admin access required</h2><p className="mt-2 text-muted-foreground">Sign in with admin@healthassist.ai / admin123.</p></Card></Page>;
+    if (hydrated && !loading && !user) nav({ to: "/auth", search: { redirect: window.location.pathname } });
+  }, [hydrated, loading, user, nav]);
+  if (!hydrated || loading) return <div className="grid min-h-dvh place-items-center text-muted-foreground">Loading…</div>;
+  if (!user) return <div className="grid min-h-dvh place-items-center text-muted-foreground">Loading…</div>;
+  if (admin && (!user.isDemo || user.role !== "admin")) return <Page><Card className="p-10 text-center"><h2 className="text-xl font-bold">Admin access required</h2><p className="mt-2 text-muted-foreground">Use the local demo admin account to manage the demo catalogue.</p></Card></Page>;
+  return <>{children}</>;
+}
+
+export function RequireCloudAuth({ children }: { children: ReactNode }) {
+  const hydrated = useHydrated();
+  const { user, loading } = useAppUser();
+  const nav = useNavigate();
+  useEffect(() => {
+    if (hydrated && !loading && (!user || user.isDemo)) nav({ to: "/auth", search: { redirect: window.location.pathname } });
+  }, [hydrated, loading, user, nav]);
+  if (!hydrated || loading || !user || user.isDemo) return <div className="grid min-h-dvh place-items-center text-muted-foreground">Loading…</div>;
   return <>{children}</>;
 }
 
