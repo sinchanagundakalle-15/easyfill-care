@@ -9,7 +9,6 @@ import { Btn, Card, Input, Label, Page, RequireCloudAuth } from "@/components/ap
 import { useAppUser } from "@/lib/cloud-user";
 import { deletePeriodRecord, getPrivateHealthData, savePeriodPreferences, savePeriodRecord } from "@/lib/private-health.functions";
 import { estimatePeriodDates, predictNextPeriod, type PeriodRecord } from "@/lib/period";
-import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/period-tracker")({
   head: () => ({ meta: [
@@ -69,8 +68,8 @@ function PeriodTracker() {
   }, [reminderEnabled, prediction?.date, reminderDays, user?.id]);
 
   const save = async () => {
-    if (!startDate) return toast.error("Choose the period start date.");
-    if (endDate && endDate < startDate) return toast.error("End date must be on or after the start date.");
+    if (!startDate) { toast.error("Choose the period start date."); return; }
+    if (endDate && endDate < startDate) { toast.error("End date must be on or after the start date."); return; }
     setSaving(true);
     try {
       await saveRecord({ data: { startDate, endDate: endDate || null } });
@@ -91,9 +90,9 @@ function PeriodTracker() {
     const days = Number(reminderDays);
     const average = cycleDays ? Number(cycleDays) : null;
     const duration = durationDays ? Number(durationDays) : null;
-    if (average !== null && (!Number.isInteger(average) || average < 18 || average > 60)) return toast.error("Cycle length must be between 18 and 60 days.");
-    if (duration !== null && (!Number.isInteger(duration) || duration < 1 || duration > 15)) return toast.error("Period duration must be between 1 and 15 days.");
-    if (!Number.isInteger(days) || days < 0 || days > 14) return toast.error("Reminder lead time must be between 0 and 14 days.");
+    if (average !== null && (!Number.isInteger(average) || average < 18 || average > 60)) { toast.error("Cycle length must be between 18 and 60 days."); return; }
+    if (duration !== null && (!Number.isInteger(duration) || duration < 1 || duration > 15)) { toast.error("Period duration must be between 1 and 15 days."); return; }
+    if (!Number.isInteger(days) || days < 0 || days > 14) { toast.error("Reminder lead time must be between 0 and 14 days."); return; }
     if (reminderEnabled && typeof Notification !== "undefined" && Notification.permission !== "granted") {
       const permission = await Notification.requestPermission();
       if (permission !== "granted") return toast.error("Notifications were not allowed by this browser.");
@@ -133,7 +132,7 @@ function PeriodTracker() {
 
           <Card className="mt-5 p-5">
             <h2 className="text-lg font-bold">Period history</h2>
-            {records.length === 0 ? <p className="mt-3 text-sm text-muted-foreground">No dates recorded yet.</p> : <div className="mt-3 divide-y">{[...records].sort((a, b) => b.start_date.localeCompare(a.start_date)).map((record) => <div key={record.id} className="flex items-center justify-between gap-3 py-3"><div><p className="font-semibold">Started {format(new Date(`${record.start_date}T12:00:00`), "d MMM yyyy")}</p><p className="text-xs text-muted-foreground">{record.end_date ? `Ended ${format(new Date(`${record.end_date}T12:00:00`), "d MMM yyyy")}` : "End date not recorded"}</p></div><Btn variant="ghost" size="sm" aria-label="Delete recorded period" onClick={async () => { try { await removeRecord({ data: { id: record.id! } }); await queryClient.invalidateQueries({ queryKey: ["private-health", user?.id] }); toast.success("Record deleted."); } catch (error) { toast.error(error instanceof Error ? error.message : "Could not delete the record."); } }}><Trash2 className="h-4 w-4" /></Btn></div>)}</div>}
+            {records.length === 0 ? <p className="mt-3 text-sm text-muted-foreground">No dates recorded yet.</p> : <div className="mt-3 divide-y">{[...records].sort((a, b) => b.start_date.localeCompare(a.start_date)).map((record) => <div key={record.id ?? record.start_date} className="flex items-center justify-between gap-3 py-3"><div><p className="font-semibold">Started {format(new Date(`${record.start_date}T12:00:00`), "d MMM yyyy")}</p><p className="text-xs text-muted-foreground">{record.end_date ? `Ended ${format(new Date(`${record.end_date}T12:00:00`), "d MMM yyyy")}` : "End date not recorded"}</p></div><Btn variant="ghost" size="sm" aria-label="Delete recorded period" disabled={!record.id} onClick={async () => { if (!record.id) return; try { await removeRecord({ data: { id: record.id } }); await queryClient.invalidateQueries({ queryKey: ["private-health", user?.id] }); toast.success("Record deleted."); } catch (error) { toast.error(error instanceof Error ? error.message : "Could not delete the record."); } }}><Trash2 className="h-4 w-4" /></Btn></div>)}</div>}
           </Card>
         </section>
 

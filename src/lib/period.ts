@@ -1,4 +1,4 @@
-export type PeriodRecord = { start_date: string; end_date?: string | null };
+export type PeriodRecord = { id?: string; start_date: string; end_date?: string | null };
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 

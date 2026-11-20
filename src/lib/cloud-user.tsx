@@ -58,7 +58,7 @@ export function useCloudAuth() {
   return useContext(CloudAuthContext);
 }
 
-export function useAppUser() {
+export function useAppUser(): { user: AppUser | null; loading: boolean } {
   const { user: cloudUser, loading } = useCloudAuth();
   const demoUser = useDemoUser();
   const user: AppUser | null = cloudUser
